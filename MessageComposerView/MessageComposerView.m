@@ -21,6 +21,7 @@
 // THE SOFTWARE.
 
 #import "MessageComposerView.h"
+#import <QuartzCore/QuartzCore.h>
 
 @interface MessageComposerView()
 - (IBAction)sendClicked:(id)sender;
@@ -36,7 +37,7 @@
 
 @implementation MessageComposerView
 
-const NSInteger defaultHeight = 54;
+const NSInteger defaultHeight = 48;
 
 - (id)init {
     return [self initWithKeyboardOffset:0 andMaxHeight:CGFLOAT_MAX];
@@ -58,7 +59,7 @@ const NSInteger defaultHeight = 54;
     self = [super initWithFrame:frame];
     if (self) {
         // top inset is used as a minimum value of top padding.
-        _composerBackgroundInsets = UIEdgeInsetsMake(10, 10, 10, 10);
+        _composerBackgroundInsets = UIEdgeInsetsMake(7, 7, 7, 7);
         
         // Default animation time for 5 <= iOS <= 7. Should be overwritten by first keyboard notification.
         _keyboardAnimationDuration = 0.25;
@@ -102,11 +103,14 @@ const NSInteger defaultHeight = 54;
 }
 
 - (void)setup {
-    self.backgroundColor = [UIColor lightGrayColor];
+    self.backgroundColor =  [UIColor colorWithRed:247/255.0f green:247/255.0f blue:247/255.0f alpha:1.0f];
     self.autoresizesSubviews = YES;
     self.autoresizingMask = UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleWidth;
     self.userInteractionEnabled = YES;
     self.multipleTouchEnabled = NO;
+    
+    self.layer.borderColor = [UIColor colorWithRed:215/255.0f green:215/255.0f blue:215/255.0f alpha:1.0f].CGColor;
+    self.layer.borderWidth = 1.0f;
     
     CGRect sendButtonFrame = self.bounds;
     sendButtonFrame.size.width = 50;
@@ -116,12 +120,12 @@ const NSInteger defaultHeight = 54;
     [self.sendButton setFrame:sendButtonFrame];
     [self.sendButton setAutoresizingMask:(UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleLeftMargin)];
     [self.sendButton.layer setCornerRadius:5];
-    [self.sendButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    [self.sendButton setTitleColor: [UIColor colorWithRed:0/255.0f green:118/255.0f blue:255/255.0f alpha:1.0f] forState:UIControlStateNormal];
     [self.sendButton setTitleColor:[UIColor colorWithRed:210/255.0 green:210/255.0 blue:210/255.0 alpha:1.0] forState:UIControlStateHighlighted];
     [self.sendButton setTitleColor:[UIColor grayColor] forState:UIControlStateSelected];
-    [self.sendButton setBackgroundColor:[UIColor orangeColor]];
+    [self.sendButton setBackgroundColor: [UIColor colorWithRed:247/255.0f green:247/255.0f blue:247/255.0f alpha:1.0f]];
     [self.sendButton setTitle:@"Send" forState:UIControlStateNormal];
-    [self.sendButton.titleLabel setFont:[UIFont boldSystemFontOfSize:14]];
+    [self.sendButton.titleLabel setFont:[UIFont boldSystemFontOfSize:18]];
     
     CGRect messageTextViewFrame = self.bounds;
     messageTextViewFrame.origin.x = _composerBackgroundInsets.left;
@@ -134,6 +138,9 @@ const NSInteger defaultHeight = 54;
     [self.messageTextView.layer setCornerRadius:5];
     [self.messageTextView setFont:[UIFont systemFontOfSize:14]];
     [self.messageTextView setDelegate:self];
+    [self.messageTextView.layer setBorderColor:[UIColor colorWithRed:215/255.0f green:215/255.0f blue:215/255.0f alpha:1.0f].CGColor];
+    [self.messageTextView.layer setBorderWidth:1.0f];
+
     
     NSNotificationCenter* defaultCenter = [NSNotificationCenter defaultCenter];
     [defaultCenter addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
