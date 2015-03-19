@@ -25,8 +25,10 @@
 
 @interface MessageComposerView()
 - (IBAction)sendClicked:(id)sender;
+- (IBAction)cameraClicked:(id)sender;
 @property(nonatomic, strong) UITextView *messageTextView;
 @property(nonatomic, strong) UIButton *sendButton;
+@property(nonatomic, strong) UIButton *cameraButton;
 @property(nonatomic) CGFloat keyboardHeight;
 @property(nonatomic) CGFloat keyboardAnimationDuration;
 @property(nonatomic) NSInteger keyboardAnimationCurve;
@@ -72,6 +74,9 @@ const NSInteger defaultHeight = 48;
         self.sendButton = [[UIButton alloc] initWithFrame:CGRectZero];
         [self.sendButton addTarget:self action:@selector(sendClicked:) forControlEvents:UIControlEventTouchUpInside];
         
+        self.cameraButton = [[UIButton alloc] initWithFrame:CGRectZero];
+        [self.cameraButton addTarget:self action:@selector(cameraClicked:) forControlEvents:UIControlEventTouchUpInside];
+        
         // fix ridiculous jumpy scrolling bug inherant in native UITextView since 7.0
         // http://stackoverflow.com/a/19339716/740474
         NSString *reqSysVer = @"7.0";
@@ -94,6 +99,7 @@ const NSInteger defaultHeight = 48;
         // insert elements above MessageComposerView
         [self insertSubview:self.sendButton aboveSubview:self];
         [self insertSubview:self.messageTextView aboveSubview:self];
+        [self insertSubview:self.cameraButton aboveSubview:self];
     }
     return self;
 }
@@ -128,9 +134,9 @@ const NSInteger defaultHeight = 48;
     [self.sendButton.titleLabel setFont:[UIFont boldSystemFontOfSize:18]];
     
     CGRect messageTextViewFrame = self.bounds;
-    messageTextViewFrame.origin.x = _composerBackgroundInsets.left;
+    messageTextViewFrame.origin.x = _composerBackgroundInsets.left + 45;
     messageTextViewFrame.origin.y = _composerBackgroundInsets.top;
-    messageTextViewFrame.size.width = self.frame.size.width - _composerBackgroundInsets.left - 10 - sendButtonFrame.size.width - _composerBackgroundInsets.right;
+    messageTextViewFrame.size.width = self.frame.size.width - _composerBackgroundInsets.left - 55 - sendButtonFrame.size.width - _composerBackgroundInsets.right;
     messageTextViewFrame.size.height = defaultHeight - _composerBackgroundInsets.top - _composerBackgroundInsets.bottom;
     [self.messageTextView setFrame:messageTextViewFrame];
     [self.messageTextView setAutoresizingMask:(UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleBottomMargin)];
@@ -141,6 +147,16 @@ const NSInteger defaultHeight = 48;
     [self.messageTextView.layer setBorderColor:[UIColor colorWithRed:215/255.0f green:215/255.0f blue:215/255.0f alpha:1.0f].CGColor];
     [self.messageTextView.layer setBorderWidth:1.0f];
 
+    CGRect cameraButtonFrame = self.bounds;
+    cameraButtonFrame.size.width = 30;
+    cameraButtonFrame.size.height = 22;
+    cameraButtonFrame.origin.x = _composerBackgroundInsets.right + 2;
+    cameraButtonFrame.origin.y = self.bounds.size.height - _composerBackgroundInsets.bottom - cameraButtonFrame.size.height - 7;
+    [self.cameraButton setFrame:cameraButtonFrame];
+    
+    [self.cameraButton setAutoresizingMask:(UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleRightMargin)];
+    
+    [self.cameraButton setImage:[UIImage imageNamed:@"cameraIcon.png"] forState:UIControlStateNormal];
     
     NSNotificationCenter* defaultCenter = [NSNotificationCenter defaultCenter];
     [defaultCenter addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
@@ -180,6 +196,9 @@ const NSInteger defaultHeight = 48;
         CGRect newSendButtonFrame = self.sendButton.frame;
         newSendButtonFrame.origin.y = newContainerFrame.size.height - (_composerBackgroundInsets.bottom + newSendButtonFrame.size.height);
         
+        CGRect cameraButtonFrame = self.cameraButton.frame;
+        newContainerFrame.origin.y = newContainerFrame.size.height - (_composerBackgroundInsets.bottom + newSendButtonFrame.size.height);
+        
         // Recalculate UITextView frame
         CGRect newTextViewFrame = self.messageTextView.frame;
         newTextViewFrame.size.height = newHeight;
@@ -188,6 +207,7 @@ const NSInteger defaultHeight = 48;
         self.frame = newContainerFrame;
         self.sendButton.frame = newSendButtonFrame;
         self.messageTextView.frame = newTextViewFrame;
+        self.cameraButton.frame = cameraButtonFrame;
         [self scrollTextViewToBottom];
         
         if ([self.delegate respondsToSelector:@selector(messageComposerFrameDidChange:withAnimationDuration:)]) {
@@ -264,6 +284,12 @@ const NSInteger defaultHeight = 48;
     // Manually trigger the textViewDidChange method as setting the text when the messageTextView is not first responder the
     // UITextViewTextDidChangeNotification notification does not get fired.
     [self textViewDidChange:self.messageTextView];
+}
+
+#pragma mark - IBAction
+- (IBAction)cameraClicked:(id)sender {
+    if ([self.delegate respondsToSelector:@selector(messageComposerCameraButtonClicked)])
+        [self.delegate messageComposerCameraButtonClicked];
 }
 
 

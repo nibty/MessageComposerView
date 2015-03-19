@@ -35,6 +35,8 @@ alpha:1.0]
 // text view when send is pressed
 - (void)messageComposerSendMessageClickedWithMessage:(NSString*)message;
 @optional
+// delagate method executed after the user clicks the camera button
+- (void)messageComposerCameraButtonClicked;
 // executed whenever the MessageComposerView's frame changes. Provides the frame it is changing to and the animation duration
 - (void)messageComposerFrameDidChange:(CGRect)frame withAnimationDuration:(CGFloat)duration;
 // executed whenever the user is typing in the text view
@@ -59,4 +61,3 @@ alpha:1.0]
 - (void)startEditing;
 - (void)finishEditing;
 @end
-
