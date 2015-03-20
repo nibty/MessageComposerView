@@ -195,8 +195,8 @@ const NSInteger defaultHeight = 48;
         CGRect newSendButtonFrame = self.sendButton.frame;
         newSendButtonFrame.origin.y = newContainerFrame.size.height - (_composerBackgroundInsets.bottom + newSendButtonFrame.size.height);
         
-        CGRect cameraButtonFrame = self.cameraButton.frame;
-        newContainerFrame.origin.y = newContainerFrame.size.height - (_composerBackgroundInsets.bottom + newSendButtonFrame.size.height);
+        CGRect newCameraButtonFrame = self.cameraButton.frame;
+        newCameraButtonFrame.origin.y = newContainerFrame.size.height - (_composerBackgroundInsets.bottom + newCameraButtonFrame.size.height + 6);
         
         // Recalculate UITextView frame
         CGRect newTextViewFrame = self.messageTextView.frame;
@@ -206,7 +206,7 @@ const NSInteger defaultHeight = 48;
         self.frame = newContainerFrame;
         self.sendButton.frame = newSendButtonFrame;
         self.messageTextView.frame = newTextViewFrame;
-        self.cameraButton.frame = cameraButtonFrame;
+        self.cameraButton.frame = newCameraButtonFrame;
         
         [self scrollTextViewToBottom];
         
