@@ -109,6 +109,24 @@ const NSInteger defaultHeight = 48;
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
+-(void)hideCameraButton {
+    self.cameraButton.hidden = YES;
+    
+    CGRect newTextViewFrame = self.messageTextView.frame;
+    newTextViewFrame.size.width = newTextViewFrame.size.width + self.cameraButton.frame.size.width;
+    newTextViewFrame.origin.x = newTextViewFrame.origin.x - self.cameraButton.frame.size.width - _composerBackgroundInsets.left;
+    self.messageTextView.frame = newTextViewFrame;
+}
+
+-(void)showCameraButton {
+    CGRect newTextViewFrame = self.messageTextView.frame;
+    newTextViewFrame.size.width = newTextViewFrame.size.width - self.cameraButton.frame.size.width;
+    newTextViewFrame.origin.x = newTextViewFrame.origin.x + self.cameraButton.frame.size.width + _composerBackgroundInsets.left;
+    self.messageTextView.frame = newTextViewFrame;
+    
+    self.cameraButton.hidden = NO;
+}
+
 - (void)setup {
     self.backgroundColor =  [UIColor colorWithRed:247/255.0f green:247/255.0f blue:247/255.0f alpha:1.0f];
     self.autoresizesSubviews = YES;
