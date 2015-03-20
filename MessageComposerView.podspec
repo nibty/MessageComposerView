@@ -15,7 +15,6 @@ Pod::Spec.new do |s|
   s.social_media_url = 'https://twitter.com/alexgophermix'
   s.requires_arc     = true
   s.source_files     = "#{name}/*.{h,m}"
-  s.resources        = "#{name}/*.{xib}"
   s.resources        = 'MessageComposerView/MessageComposerView.bundle'
   s.platform         = :ios, '8.0'
 end

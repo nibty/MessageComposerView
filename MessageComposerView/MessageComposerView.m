@@ -154,11 +154,8 @@ const NSInteger defaultHeight = 48;
     cameraButtonFrame.origin.x = _composerBackgroundInsets.right + 2;
     cameraButtonFrame.origin.y = self.bounds.size.height - _composerBackgroundInsets.bottom - cameraButtonFrame.size.height - 7;
     [self.cameraButton setFrame:cameraButtonFrame];
-
     [self.cameraButton setAutoresizingMask:(UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleRightMargin)];
-    
-    [self.cameraButton setImage:[UIImage imageNamed:@"MessageComposer.bundle/images/cameraIcon.png"] forState:UIControlStateNormal];
-    
+    [self.cameraButton setImage:[UIImage imageNamed:@"MessageComposerView.bundle/images/cameraIcon.png"] forState:UIControlStateNormal];
     
     NSNotificationCenter* defaultCenter = [NSNotificationCenter defaultCenter];
     [defaultCenter addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
