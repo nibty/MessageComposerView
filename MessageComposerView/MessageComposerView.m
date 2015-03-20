@@ -201,7 +201,7 @@ const NSInteger defaultHeight = 48;
         // Recalculate UITextView frame
         CGRect newTextViewFrame = self.messageTextView.frame;
         newTextViewFrame.size.height = newHeight;
-        newTextViewFrame.origin.y = _composerBackgroundInsets.top;
+        //newTextViewFrame.origin.y = _composerBackgroundInsets.top;
         
         self.frame = newContainerFrame;
         self.sendButton.frame = newSendButtonFrame;
