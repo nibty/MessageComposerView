@@ -178,6 +178,7 @@ const NSInteger defaultHeight = 48;
     NSNotificationCenter* defaultCenter = [NSNotificationCenter defaultCenter];
     [defaultCenter addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
     [defaultCenter addObserver:self selector:@selector(keyboardWillChangeFrame:) name:UIKeyboardWillChangeFrameNotification object:nil];
+    [defaultCenter addObserver:self selector:@selector(keyboardWillHide:) name:UIKeyboardWillHideNotification object:nil];
 }
 
 - (void)layoutSubviews {
@@ -282,6 +283,11 @@ const NSInteger defaultHeight = 48;
     // is triggered we can use the following values for all of animations including the first.
     _keyboardAnimationDuration = [[notification userInfo][UIKeyboardAnimationDurationUserInfoKey] floatValue];
     _keyboardAnimationCurve = [[notification userInfo][UIKeyboardAnimationCurveUserInfoKey] intValue];
+}
+
+#pragma mark - Keyboard Notifications
+- (void)keyboardWillHide:(NSNotification*)notification {
+    self.keyboardHeight = 0;
 }
 
 - (void)keyboardWillChangeFrame:(NSNotification *)notification {
