@@ -41,6 +41,7 @@ alpha:1.0]
 - (void)messageComposerFrameDidChange:(CGRect)frame withAnimationDuration:(CGFloat)duration;
 // executed whenever the user is typing in the text view
 - (void)messageComposerUserTyping;
+
 @end
 
 @interface MessageComposerView : UIView<UITextViewDelegate>
@@ -60,4 +61,8 @@ alpha:1.0]
 // do [messageComposerView.messageTextView resignFirstResponder] etc.
 - (void)startEditing;
 - (void)finishEditing;
+
+// hide/show camera button
+- (void)hideCameraButton;
+- (void)showCameraButton;
 @end
