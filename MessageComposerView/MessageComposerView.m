@@ -36,7 +36,7 @@
 @property(nonatomic) CGFloat composerTVMaxHeight;
 @property(nonatomic, strong) UILabel *charCountDown;
 @property(nonatomic, strong) UILabel *placeholderLabel;
-
+@property(nonatomic, readwrite) CGFloat originalFrameHeight;
 
 @end
 
@@ -120,6 +120,7 @@ const NSInteger defaultHeight = 48;
     newTextViewFrame.size.width = newTextViewFrame.size.width + self.cameraButton.frame.size.width;
     newTextViewFrame.origin.x = newTextViewFrame.origin.x - self.cameraButton.frame.size.width - _composerBackgroundInsets.left;
     self.messageTextView.frame = newTextViewFrame;
+    self.originalFrameHeight = self.frame.size.height;
 }
 
 -(void)showCameraButton {
@@ -127,7 +128,8 @@ const NSInteger defaultHeight = 48;
     newTextViewFrame.size.width = newTextViewFrame.size.width - self.cameraButton.frame.size.width;
     newTextViewFrame.origin.x = newTextViewFrame.origin.x + self.cameraButton.frame.size.width + _composerBackgroundInsets.left;
     self.messageTextView.frame = newTextViewFrame;
-    
+    self.originalFrameHeight = self.frame.size.height;
+
     self.cameraButton.hidden = NO;
 }
 
@@ -159,6 +161,7 @@ const NSInteger defaultHeight = 48;
     messageTextViewFrame.origin.y = _composerBackgroundInsets.top;
     messageTextViewFrame.size.width = self.frame.size.width - _composerBackgroundInsets.left - 30 - charCountDownFrame.size.width - _composerBackgroundInsets.right;
     messageTextViewFrame.size.height = defaultHeight - _composerBackgroundInsets.top - _composerBackgroundInsets.bottom;
+    
     [self.messageTextView setFrame:messageTextViewFrame];
     [self.messageTextView setAutoresizingMask:(UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleBottomMargin)];
     [self.messageTextView setShowsHorizontalScrollIndicator:NO];
@@ -186,6 +189,8 @@ const NSInteger defaultHeight = 48;
     [self.cameraButton setFrame:cameraButtonFrame];
     [self.cameraButton setAutoresizingMask:(UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleRightMargin)];
     [self.cameraButton setImage:[UIImage imageNamed:@"MessageComposerView.bundle/images/cameraIcon.png"] forState:UIControlStateNormal];
+    
+    self.originalFrameHeight = self.frame.size.height;
     
     NSNotificationCenter* defaultCenter = [NSNotificationCenter defaultCenter];
     [defaultCenter addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
