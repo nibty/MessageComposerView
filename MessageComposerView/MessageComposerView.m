@@ -65,21 +65,21 @@ const NSInteger defaultHeight = 48;
     if (self) {
         // top inset is used as a minimum value of top padding.
         _composerBackgroundInsets = UIEdgeInsetsMake(7, 7, 7, 7);
-        
+
         // Default animation time for 5 <= iOS <= 7. Should be overwritten by first keyboard notification.
         _keyboardAnimationDuration = 0.25;
         _keyboardAnimationCurve = 7;
         _keyboardOffset = offset;
         _composerBackgroundInsets.top = MAX(_composerBackgroundInsets.top, frame.size.height - _composerBackgroundInsets.bottom - 34);
         _composerTVMaxHeight = maxTVHeight;
-        
+
         // alloc necessary elements
         self.charCountDown = [[UILabel alloc] initWithFrame:CGRectZero];
         self.placeholderLabel = [[UILabel alloc] initWithFrame:CGRectZero];
 
         self.cameraButton = [[UIButton alloc] initWithFrame:CGRectZero];
         [self.cameraButton addTarget:self action:@selector(cameraClicked:) forControlEvents:UIControlEventTouchUpInside];
-        
+
         // fix ridiculous jumpy scrolling bug inherant in native UITextView since 7.0
         // http://stackoverflow.com/a/19339716/740474
         NSString *reqSysVer = @"7.0";
@@ -95,12 +95,12 @@ const NSInteger defaultHeight = 48;
         } else {
             self.messageTextView = [[UITextView alloc] initWithFrame:CGRectZero];
         }
-        
+
         self.messageTextView.returnKeyType = UIReturnKeySend;
-        
+
         // configure elements
         [self setup];
-        
+
         // insert elements above MessageComposerView
         [self insertSubview:self.charCountDown aboveSubview:self];
         [self insertSubview:self.messageTextView aboveSubview:self];
@@ -115,7 +115,7 @@ const NSInteger defaultHeight = 48;
 
 -(void)hideCameraButton {
     self.cameraButton.hidden = YES;
-    
+
     CGRect newTextViewFrame = self.messageTextView.frame;
     newTextViewFrame.size.width = newTextViewFrame.size.width + self.cameraButton.frame.size.width;
     newTextViewFrame.origin.x = newTextViewFrame.origin.x - self.cameraButton.frame.size.width - _composerBackgroundInsets.left;
@@ -136,13 +136,13 @@ const NSInteger defaultHeight = 48;
 - (void)setup {
     self.backgroundColor =  [UIColor colorWithRed:247/255.0f green:247/255.0f blue:247/255.0f alpha:1.0f];
     self.autoresizesSubviews = YES;
-    self.autoresizingMask = UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleWidth;
+    self.autoresizingMask = UIViewAutoresizingFlexibleWidth;
     self.userInteractionEnabled = YES;
     self.multipleTouchEnabled = NO;
-    
+
     self.layer.borderColor = [UIColor colorWithRed:215/255.0f green:215/255.0f blue:215/255.0f alpha:1.0f].CGColor;
     self.layer.borderWidth = 1.0f;
-    
+
     CGRect charCountDownFrame = self.bounds;
     charCountDownFrame.size.width = 45;
     charCountDownFrame.size.height = defaultHeight - _composerBackgroundInsets.top - _composerBackgroundInsets.bottom;
@@ -155,13 +155,13 @@ const NSInteger defaultHeight = 48;
     [self.charCountDown setText:@"200"];
     [self.charCountDown setFont:[UIFont systemFontOfSize:17]];
     self.charCountDown.textAlignment = NSTextAlignmentRight;
-    
+
     CGRect messageTextViewFrame = self.bounds;
     messageTextViewFrame.origin.x = _composerBackgroundInsets.left + 40;
     messageTextViewFrame.origin.y = _composerBackgroundInsets.top;
     messageTextViewFrame.size.width = self.frame.size.width - _composerBackgroundInsets.left - 30 - charCountDownFrame.size.width - _composerBackgroundInsets.right;
     messageTextViewFrame.size.height = defaultHeight - _composerBackgroundInsets.top - _composerBackgroundInsets.bottom;
-    
+
     [self.messageTextView setFrame:messageTextViewFrame];
     [self.messageTextView setAutoresizingMask:(UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleBottomMargin)];
     [self.messageTextView setShowsHorizontalScrollIndicator:NO];
@@ -170,7 +170,7 @@ const NSInteger defaultHeight = 48;
     [self.messageTextView setDelegate:self];
     [self.messageTextView.layer setBorderColor:[UIColor colorWithRed:215/255.0f green:215/255.0f blue:215/255.0f alpha:1.0f].CGColor];
     [self.messageTextView.layer setBorderWidth:1.0f];
-    
+
     [self.placeholderLabel setText: @"Click to reply"];
     [self.placeholderLabel setFont: [UIFont italicSystemFontOfSize: 14]];
     [self.placeholderLabel setTextColor:[UIColor colorWithWhite: 0.70 alpha:1]];
@@ -180,7 +180,7 @@ const NSInteger defaultHeight = 48;
     CGRect myFrame = self.placeholderLabel.frame;
     myFrame.origin = CGPointMake(5, 7);
     self.placeholderLabel.frame = myFrame;
-    
+
     CGRect cameraButtonFrame = self.bounds;
     cameraButtonFrame.size.width = 30;
     cameraButtonFrame.size.height = 22;
@@ -189,9 +189,9 @@ const NSInteger defaultHeight = 48;
     [self.cameraButton setFrame:cameraButtonFrame];
     [self.cameraButton setAutoresizingMask:(UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleRightMargin)];
     [self.cameraButton setImage:[UIImage imageNamed:@"MessageComposerView.bundle/images/cameraIcon.png"] forState:UIControlStateNormal];
-    
+
     self.originalFrameHeight = self.frame.size.height;
-    
+
     NSNotificationCenter* defaultCenter = [NSNotificationCenter defaultCenter];
     [defaultCenter addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
     [defaultCenter addObserver:self selector:@selector(keyboardWillChangeFrame:) name:UIKeyboardWillChangeFrameNotification object:nil];
@@ -205,16 +205,16 @@ const NSInteger defaultHeight = 48;
             if ([self.delegate respondsToSelector:@selector (messageComposerSendMessageClickedWithMessage:)]) {
                 [self.delegate messageComposerSendMessageClickedWithMessage:self.messageTextView.text];
             }
-        
+
             [self.messageTextView setText:@""];
             // Manually trigger the textViewDidChange method as setting the     text when the messageTextView is not first responder the
             // UITextViewTextDidChangeNotification notification does not get fired.
             [self textViewDidChange:self.messageTextView];
         }
-        
+
         return false;
     }
-    
+
     return true;
 }
 
@@ -223,7 +223,7 @@ const NSInteger defaultHeight = 48;
     // ( see http://stackoverflow.com/q/19974246/740474 ) rotation handling and view resizing is done here.
     CGFloat oldHeight = self.messageTextView.frame.size.height;
     CGFloat newHeight = [self sizeWithText:self.messageTextView.text];
-    
+
     if (newHeight >= _composerTVMaxHeight) {
         [self scrollTextViewToBottom];
     }
@@ -232,7 +232,7 @@ const NSInteger defaultHeight = 48;
         CGRect frame = self.frame;
         frame.origin.y = ([self currentScreenSize].height - [self currentKeyboardHeight]) - frame.size.height - _keyboardOffset;
         self.frame = frame;
-        
+
         // Even though the height didn't change the origin did so notify delegates
         if ([self.delegate respondsToSelector:@selector(messageComposerFrameDidChange:withAnimationDuration:)]) {
             [self.delegate messageComposerFrameDidChange:frame withAnimationDuration:0];
@@ -246,26 +246,26 @@ const NSInteger defaultHeight = 48;
         CGRect newContainerFrame = self.frame;
         newContainerFrame.size.height = newHeight + _composerBackgroundInsets.top + _composerBackgroundInsets.bottom;
         newContainerFrame.origin.y = ([self currentScreenSize].height - [self currentKeyboardHeight]) - newContainerFrame.size.height - _keyboardOffset;;
-        
+
         // Recalculate send button frame
         CGRect newCharCountDownFrame = self.charCountDown.frame;
         newCharCountDownFrame.origin.y = newContainerFrame.size.height - (_composerBackgroundInsets.bottom + newCharCountDownFrame.size.height);
-        
+
         CGRect newCameraButtonFrame = self.cameraButton.frame;
         newCameraButtonFrame.origin.y = newContainerFrame.size.height - (_composerBackgroundInsets.bottom + newCameraButtonFrame.size.height + 6);
-        
+
         // Recalculate UITextView frame
         CGRect newTextViewFrame = self.messageTextView.frame;
         newTextViewFrame.size.height = newHeight;
         //newTextViewFrame.origin.y = _composerBackgroundInsets.top;
-        
+
         self.frame = newContainerFrame;
         self.charCountDown.frame = newCharCountDownFrame;
         self.messageTextView.frame = newTextViewFrame;
         self.cameraButton.frame = newCameraButtonFrame;
-        
+
         [self scrollTextViewToBottom];
-        
+
         if ([self.delegate respondsToSelector:@selector(messageComposerFrameDidChange:withAnimationDuration:)]) {
             [self.delegate messageComposerFrameDidChange:newContainerFrame withAnimationDuration:0];
         }
@@ -276,53 +276,53 @@ const NSInteger defaultHeight = 48;
 #pragma mark - UITextViewDelegate
 - (void)textViewDidChange:(UITextView *)textView {
     [self setNeedsLayout];
-    
+
     if ([self.delegate respondsToSelector:@selector(messageComposerUserTyping)]) {
         [self.delegate messageComposerUserTyping];
     }
-    
+
     NSInteger count = 200 - [self.messageTextView.text length];
-    
+
     if (count < 0) {
         self.charCountDown.textColor = [UIColor redColor];
     } else if (count >= 0)  {
         self.charCountDown.textColor = [UIColor colorWithRed:71/255.0f green:170/255.0f blue:211/255.0f alpha:1.0f];
     }
-    
+
     self.charCountDown.text = [NSString stringWithFormat:@"%ld", (long)count];
 }
 
 - (void)textViewDidBeginEditing:(UITextView*)textView {
     CGRect frame = self.frame;
     frame.origin.y = ([self currentScreenSize].height - [self currentKeyboardHeight]) - frame.size.height - _keyboardOffset;
-    
+
     [UIView animateWithDuration:_keyboardAnimationDuration
                           delay:0.0
                         options:(_keyboardAnimationCurve << 16)
                      animations:^{self.frame = frame;}
                      completion:nil];
-    
+
     if ([self.delegate respondsToSelector:@selector(messageComposerFrameDidChange:withAnimationDuration:)]) {
         [self.delegate messageComposerFrameDidChange:frame withAnimationDuration:_keyboardAnimationDuration];
     }
-    
+
     self.placeholderLabel.hidden = true;
 }
 
 - (void)textViewDidEndEditing:(UITextView*)textView {
     CGRect frame = self.frame;
     frame.origin.y = [self currentScreenSize].height - self.frame.size.height - _keyboardOffset;
-    
+
     [UIView animateWithDuration:_keyboardAnimationDuration
                           delay:0.0
                         options:(_keyboardAnimationCurve << 16)
                      animations:^{self.frame = frame;}
                      completion:nil];
-    
+
     if ([self.delegate respondsToSelector:@selector(messageComposerFrameDidChange:withAnimationDuration:)]) {
         [self.delegate messageComposerFrameDidChange:frame withAnimationDuration:_keyboardAnimationDuration];
     }
-    
+
     self.placeholderLabel.hidden = false;
 }
 
@@ -355,7 +355,7 @@ const NSInteger defaultHeight = 48;
     if ([self.delegate respondsToSelector:@selector(messageComposerSendMessageClickedWithMessage:)]) {
         [self.delegate messageComposerSendMessageClickedWithMessage:self.messageTextView.text];
     }
-    
+
     [self.messageTextView setText:@""];
     // Manually trigger the textViewDidChange method as setting the text when the messageTextView is not first responder the
     // UITextViewTextDidChangeNotification notification does not get fired.
@@ -409,7 +409,7 @@ const NSInteger defaultHeight = 48;
     // http://stackoverflow.com/a/7905540/740474
     CGSize size = [UIScreen mainScreen].bounds.size;
     UIApplication *application = [UIApplication sharedApplication];
-    
+
     // if the orientation at this point is landscape but it hasn't fully rotated yet use landscape size instead.
     // handling differs between iOS 7 && 8 so need to check if size is properly configured or not. On
     // iOS 7 height will still be greater than width in landscape without this call but on iOS 8
@@ -417,7 +417,7 @@ const NSInteger defaultHeight = 48;
     if (UIInterfaceOrientationIsLandscape(orientation) && size.height > size.width) {
         size = CGSizeMake(size.height, size.width);
     }
-    
+
     // subtract the status bar height if visible
     if (application.statusBarHidden == NO && !([[[UIDevice currentDevice] systemVersion] floatValue] >= 7.0)) {
         // if the status bar is not hidden subtract its height from the screensize.
@@ -426,7 +426,7 @@ const NSInteger defaultHeight = 48;
         // see http://blog.jaredsinclair.com/post/61507315630/wrestling-with-status-bars-and-navigation-bars-on-ios-7
         size.height -= MIN(application.statusBarFrame.size.width, application.statusBarFrame.size.height);
     }
-    
+
     return size;
 }
 
@@ -437,3 +437,4 @@ const NSInteger defaultHeight = 48;
 }
 
 @end
+
