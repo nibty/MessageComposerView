@@ -27,6 +27,7 @@
 - (IBAction)sendClicked:(id)sender;
 - (IBAction)cameraClicked:(id)sender;
 @property(nonatomic, strong) UITextView *messageTextView;
+@property(nonatomic, strong) UIButton *sendButton;
 @property(nonatomic, strong) UIButton *cameraButton;
 @property(nonatomic) CGFloat keyboardHeight;
 @property(nonatomic) CGFloat keyboardAnimationDuration;
@@ -34,9 +35,8 @@
 @property(nonatomic) NSInteger keyboardOffset;
 @property(nonatomic) UIEdgeInsets composerBackgroundInsets;
 @property(nonatomic) CGFloat composerTVMaxHeight;
-@property(nonatomic, strong) UILabel *charCountDown;
-@property(nonatomic, strong) UILabel *placeholderLabel;
 @property(nonatomic, readwrite) CGFloat originalFrameHeight;
+@property(nonatomic, strong) UILabel *placeholderLabel;
 
 @end
 
@@ -74,7 +74,8 @@ const NSInteger defaultHeight = 48;
         _composerTVMaxHeight = maxTVHeight;
 
         // alloc necessary elements
-        self.charCountDown = [[UILabel alloc] initWithFrame:CGRectZero];
+        self.sendButton = [[UIButton alloc] initWithFrame:CGRectZero];
+        [self.sendButton addTarget:self action:@selector(sendClicked:) forControlEvents:UIControlEventTouchUpInside];
         self.placeholderLabel = [[UILabel alloc] initWithFrame:CGRectZero];
 
         self.cameraButton = [[UIButton alloc] initWithFrame:CGRectZero];
@@ -102,7 +103,7 @@ const NSInteger defaultHeight = 48;
         [self setup];
 
         // insert elements above MessageComposerView
-        [self insertSubview:self.charCountDown aboveSubview:self];
+        [self insertSubview:self.sendButton aboveSubview:self];
         [self insertSubview:self.messageTextView aboveSubview:self];
         [self insertSubview:self.cameraButton aboveSubview:self];
     }
@@ -142,24 +143,26 @@ const NSInteger defaultHeight = 48;
 
     self.layer.borderColor = [UIColor colorWithRed:215/255.0f green:215/255.0f blue:215/255.0f alpha:1.0f].CGColor;
     self.layer.borderWidth = 1.0f;
-
-    CGRect charCountDownFrame = self.bounds;
-    charCountDownFrame.size.width = 45;
-    charCountDownFrame.size.height = defaultHeight - _composerBackgroundInsets.top - _composerBackgroundInsets.bottom;
-    charCountDownFrame.origin.x = self.frame.size.width - charCountDownFrame.size.width - _composerBackgroundInsets.left;
-    charCountDownFrame.origin.y = self.bounds.size.height - _composerBackgroundInsets.bottom - charCountDownFrame.size.height;
-    [self.charCountDown setFrame:charCountDownFrame];
-    [self.charCountDown setAutoresizingMask:(UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleLeftMargin)];
-    [self.charCountDown.layer setCornerRadius:5];
-    [self.charCountDown setTextColor: [UIColor colorWithRed:71/255.0f green:170/255.0f blue:211/255.0f alpha:1.0f]];
-    [self.charCountDown setText:@"200"];
-    [self.charCountDown setFont:[UIFont systemFontOfSize:17]];
-    self.charCountDown.textAlignment = NSTextAlignmentRight;
-
+    
+    CGRect sendButtonFrame = self.bounds;
+    sendButtonFrame.size.width = 50;
+    sendButtonFrame.size.height = defaultHeight - _composerBackgroundInsets.top - _composerBackgroundInsets.bottom;
+    sendButtonFrame.origin.x = self.frame.size.width - _composerBackgroundInsets.right - sendButtonFrame.size.width;
+    sendButtonFrame.origin.y = self.bounds.size.height - _composerBackgroundInsets.bottom - sendButtonFrame.size.height;
+    [self.sendButton setFrame:sendButtonFrame];
+    [self.sendButton setAutoresizingMask:(UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleLeftMargin)];
+    [self.sendButton.layer setCornerRadius:5];
+    [self.sendButton setTitleColor: [UIColor colorWithRed:0/255.0f green:118/255.0f blue:255/255.0f alpha:1.0f] forState:UIControlStateNormal];
+    [self.sendButton setTitleColor:[UIColor colorWithRed:210/255.0 green:210/255.0 blue:210/255.0 alpha:1.0] forState:UIControlStateHighlighted];
+    [self.sendButton setTitleColor:[UIColor grayColor] forState:UIControlStateSelected];
+    [self.sendButton setBackgroundColor: [UIColor colorWithRed:247/255.0f green:247/255.0f blue:247/255.0f alpha:1.0f]];
+    [self.sendButton setTitle:@"Send" forState:UIControlStateNormal];
+    [self.sendButton.titleLabel setFont:[UIFont boldSystemFontOfSize:18]];
+    
     CGRect messageTextViewFrame = self.bounds;
-    messageTextViewFrame.origin.x = _composerBackgroundInsets.left + 40;
+    messageTextViewFrame.origin.x = _composerBackgroundInsets.left + 45;
     messageTextViewFrame.origin.y = _composerBackgroundInsets.top;
-    messageTextViewFrame.size.width = self.frame.size.width - _composerBackgroundInsets.left - 30 - charCountDownFrame.size.width - _composerBackgroundInsets.right;
+    messageTextViewFrame.size.width = self.frame.size.width - _composerBackgroundInsets.left - 55 - sendButtonFrame.size.width - _composerBackgroundInsets.right;
     messageTextViewFrame.size.height = defaultHeight - _composerBackgroundInsets.top - _composerBackgroundInsets.bottom;
 
     [self.messageTextView setFrame:messageTextViewFrame];
@@ -198,26 +201,6 @@ const NSInteger defaultHeight = 48;
     [defaultCenter addObserver:self selector:@selector(keyboardWillHide:) name:UIKeyboardWillHideNotification object:nil];
 }
 
--(BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text{
-    if ([text  isEqual: @"\n"]) {
-        if ([self.messageTextView.text length] <= 200) {
-
-            if ([self.delegate respondsToSelector:@selector (messageComposerSendMessageClickedWithMessage:)]) {
-                [self.delegate messageComposerSendMessageClickedWithMessage:self.messageTextView.text];
-            }
-
-            [self.messageTextView setText:@""];
-            // Manually trigger the textViewDidChange method as setting the     text when the messageTextView is not first responder the
-            // UITextViewTextDidChangeNotification notification does not get fired.
-            [self textViewDidChange:self.messageTextView];
-        }
-
-        return false;
-    }
-
-    return true;
-}
-
 - (void)layoutSubviews {
     // Due to inconsistent handling of rotation when receiving UIDeviceOrientationDidChange notifications
     // ( see http://stackoverflow.com/q/19974246/740474 ) rotation handling and view resizing is done here.
@@ -248,9 +231,9 @@ const NSInteger defaultHeight = 48;
         newContainerFrame.origin.y = ([self currentScreenSize].height - [self currentKeyboardHeight]) - newContainerFrame.size.height - _keyboardOffset;;
 
         // Recalculate send button frame
-        CGRect newCharCountDownFrame = self.charCountDown.frame;
-        newCharCountDownFrame.origin.y = newContainerFrame.size.height - (_composerBackgroundInsets.bottom + newCharCountDownFrame.size.height);
-
+        CGRect newSendButtonFrame = self.sendButton.frame;
+        newSendButtonFrame.origin.y = newContainerFrame.size.height - (_composerBackgroundInsets.bottom + newSendButtonFrame.size.height);
+        
         CGRect newCameraButtonFrame = self.cameraButton.frame;
         newCameraButtonFrame.origin.y = newContainerFrame.size.height - (_composerBackgroundInsets.bottom + newCameraButtonFrame.size.height + 6);
 
@@ -260,7 +243,7 @@ const NSInteger defaultHeight = 48;
         //newTextViewFrame.origin.y = _composerBackgroundInsets.top;
 
         self.frame = newContainerFrame;
-        self.charCountDown.frame = newCharCountDownFrame;
+        self.sendButton.frame = newSendButtonFrame;
         self.messageTextView.frame = newTextViewFrame;
         self.cameraButton.frame = newCameraButtonFrame;
 
@@ -276,20 +259,9 @@ const NSInteger defaultHeight = 48;
 #pragma mark - UITextViewDelegate
 - (void)textViewDidChange:(UITextView *)textView {
     [self setNeedsLayout];
-
-    if ([self.delegate respondsToSelector:@selector(messageComposerUserTyping)]) {
+    
+    if ([self.delegate respondsToSelector:@selector(messageComposerUserTyping)])
         [self.delegate messageComposerUserTyping];
-    }
-
-    NSInteger count = 200 - [self.messageTextView.text length];
-
-    if (count < 0) {
-        self.charCountDown.textColor = [UIColor redColor];
-    } else if (count >= 0)  {
-        self.charCountDown.textColor = [UIColor colorWithRed:71/255.0f green:170/255.0f blue:211/255.0f alpha:1.0f];
-    }
-
-    self.charCountDown.text = [NSString stringWithFormat:@"%ld", (long)count];
 }
 
 - (void)textViewDidBeginEditing:(UITextView*)textView {
