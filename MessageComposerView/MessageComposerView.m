@@ -256,6 +256,22 @@ const NSInteger defaultHeight = 48;
 }
 
 -(BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text{
+    if ([text  isEqual: @"\n"]) {
+        if ([self.messageTextView.text length] <= 200) {
+            
+            if ([self.delegate respondsToSelector:@selector (messageComposerSendMessageClickedWithMessage:)]) {
+                [self.delegate messageComposerSendMessageClickedWithMessage:self.messageTextView.text];
+            }
+            
+            [self.messageTextView setText:@""];
+            // Manually trigger the textViewDidChange method as setting the     text when the messageTextView is not first responder the
+            // UITextViewTextDidChangeNotification notification does not get fired.
+            [self textViewDidChange:self.messageTextView];
+        }
+        
+        return false;
+    }
+    
     return  textView.text.length + (text.length - range.length) <= 200;
 }
 
