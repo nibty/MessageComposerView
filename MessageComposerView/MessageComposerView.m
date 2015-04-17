@@ -37,6 +37,7 @@
 @property(nonatomic) CGFloat composerTVMaxHeight;
 @property(nonatomic, readwrite) CGFloat originalFrameHeight;
 @property(nonatomic, strong) UILabel *placeholderLabel;
+@property(nonatomic) CALayer *topBorder;
 
 @end
 
@@ -64,7 +65,7 @@ const NSInteger defaultHeight = 48;
     self = [super initWithFrame:frame];
     if (self) {
         // top inset is used as a minimum value of top padding.
-        _composerBackgroundInsets = UIEdgeInsetsMake(7, 7, 7, 7);
+        _composerBackgroundInsets = UIEdgeInsetsMake(8, 7, 8, 7);
 
         // Default animation time for 5 <= iOS <= 7. Should be overwritten by first keyboard notification.
         _keyboardAnimationDuration = 0.25;
@@ -134,6 +135,20 @@ const NSInteger defaultHeight = 48;
     self.cameraButton.hidden = NO;
 }
 
+-(void)setSendButtonColor:(UIColor*)color {
+    [self.sendButton setTitleColor: color forState:UIControlStateNormal];
+}
+
+-(void)setBorderColor:(UIColor*)color {
+    CGSize mainViewSize = self.bounds.size;
+    CGFloat borderWidth = 0.8f;
+    UIView *topView = [[UIView alloc] initWithFrame:CGRectMake(0.0, 0.0, mainViewSize.width, borderWidth)];
+    topView.opaque = YES;
+    topView.backgroundColor = color;
+    topView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleBottomMargin;
+    [self addSubview:topView];
+}
+
 - (void)setup {
     self.backgroundColor =  [UIColor colorWithRed:247/255.0f green:247/255.0f blue:247/255.0f alpha:1.0f];
     self.autoresizesSubviews = YES;
@@ -141,8 +156,8 @@ const NSInteger defaultHeight = 48;
     self.userInteractionEnabled = YES;
     self.multipleTouchEnabled = NO;
 
-    self.layer.borderColor = [UIColor colorWithRed:215/255.0f green:215/255.0f blue:215/255.0f alpha:1.0f].CGColor;
-    self.layer.borderWidth = 1.0f;
+    self.layer.borderWidth = 0;
+    [self setBorderColor:[UIColor lightGrayColor]];
     
     CGRect sendButtonFrame = self.bounds;
     sendButtonFrame.size.width = 50;
@@ -177,11 +192,10 @@ const NSInteger defaultHeight = 48;
     [self.placeholderLabel setText: @"Click to reply"];
     [self.placeholderLabel setFont: [UIFont italicSystemFontOfSize: 14]];
     [self.placeholderLabel setTextColor:[UIColor colorWithWhite: 0.70 alpha:1]];
-
     [self.placeholderLabel sizeToFit];
     [self.messageTextView addSubview: self.placeholderLabel];
     CGRect myFrame = self.placeholderLabel.frame;
-    myFrame.origin = CGPointMake(5, 7);
+    myFrame.origin = CGPointMake(9, 8);
     self.placeholderLabel.frame = myFrame;
 
     CGRect cameraButtonFrame = self.bounds;
