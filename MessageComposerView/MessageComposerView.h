@@ -66,4 +66,11 @@ alpha:1.0]
 // hide/show camera button
 - (void)hideCameraButton;
 - (void)showCameraButton;
+
+// Set send button color
+-(void)setSendButtonColor:(UIColor*)color;
+
+// Set border color
+-(void)setBorderColor:(UIColor*)color;
+
 @end
