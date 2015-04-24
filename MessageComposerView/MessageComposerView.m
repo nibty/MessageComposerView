@@ -189,7 +189,7 @@ const NSInteger defaultHeight = 48;
     [self.messageTextView.layer setBorderColor:[UIColor colorWithRed:215/255.0f green:215/255.0f blue:215/255.0f alpha:1.0f].CGColor];
     [self.messageTextView.layer setBorderWidth:1.0f];
 
-    [self.placeholderLabel setText: @"Click to reply"];
+    [self.placeholderLabel setText: @"Tap to reply"];
     [self.placeholderLabel setFont: [UIFont italicSystemFontOfSize: 14]];
     [self.placeholderLabel setTextColor:[UIColor colorWithWhite: 0.70 alpha:1]];
     [self.placeholderLabel sizeToFit];
