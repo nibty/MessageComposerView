@@ -47,6 +47,7 @@ alpha:1.0]
 @interface MessageComposerView : UIView<UITextViewDelegate>
 @property(nonatomic, weak) id<MessageComposerViewDelegate> delegate;
 @property(nonatomic, readonly) CGFloat originalFrameHeight;
+@property(nonatomic) NSInteger keyboardOffset;
 
 // init with screen width and default height. Offset provided is space between composer and keyboard/bottom of screen
 - (id)initWithKeyboardOffset:(NSInteger)offset andMaxHeight:(CGFloat)maxTVHeight;

@@ -32,7 +32,6 @@
 @property(nonatomic) CGFloat keyboardHeight;
 @property(nonatomic) CGFloat keyboardAnimationDuration;
 @property(nonatomic) NSInteger keyboardAnimationCurve;
-@property(nonatomic) NSInteger keyboardOffset;
 @property(nonatomic) UIEdgeInsets composerBackgroundInsets;
 @property(nonatomic) CGFloat composerTVMaxHeight;
 @property(nonatomic, readwrite) CGFloat originalFrameHeight;
