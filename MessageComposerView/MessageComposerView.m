@@ -157,7 +157,7 @@ const NSInteger defaultHeight = 48;
 
     self.layer.borderWidth = 0;
     [self setBorderColor:[UIColor lightGrayColor]];
-    
+
     CGRect sendButtonFrame = self.bounds;
     sendButtonFrame.size.width = 50;
     sendButtonFrame.size.height = defaultHeight - _composerBackgroundInsets.top - _composerBackgroundInsets.bottom;
@@ -172,7 +172,7 @@ const NSInteger defaultHeight = 48;
     [self.sendButton setBackgroundColor: [UIColor colorWithRed:247/255.0f green:247/255.0f blue:247/255.0f alpha:1.0f]];
     [self.sendButton setTitle:@"Send" forState:UIControlStateNormal];
     [self.sendButton.titleLabel setFont:[UIFont boldSystemFontOfSize:18]];
-    
+
     CGRect messageTextViewFrame = self.bounds;
     messageTextViewFrame.origin.x = _composerBackgroundInsets.left + 45;
     messageTextViewFrame.origin.y = _composerBackgroundInsets.top;
@@ -187,6 +187,7 @@ const NSInteger defaultHeight = 48;
     [self.messageTextView setDelegate:self];
     [self.messageTextView.layer setBorderColor:[UIColor colorWithRed:215/255.0f green:215/255.0f blue:215/255.0f alpha:1.0f].CGColor];
     [self.messageTextView.layer setBorderWidth:1.0f];
+    [self.messageTextView setKeyboardType:UIKeyboardTypeTwitter];
 
     [self.placeholderLabel setText: @"Tap to reply"];
     [self.placeholderLabel setFont: [UIFont italicSystemFontOfSize: 14]];
@@ -246,7 +247,7 @@ const NSInteger defaultHeight = 48;
         // Recalculate send button frame
         CGRect newSendButtonFrame = self.sendButton.frame;
         newSendButtonFrame.origin.y = newContainerFrame.size.height - (_composerBackgroundInsets.bottom + newSendButtonFrame.size.height);
-        
+
         CGRect newCameraButtonFrame = self.cameraButton.frame;
         newCameraButtonFrame.origin.y = newContainerFrame.size.height - (_composerBackgroundInsets.bottom + newCameraButtonFrame.size.height + 6);
 
@@ -271,20 +272,20 @@ const NSInteger defaultHeight = 48;
 -(BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text{
     if ([text  isEqual: @"\n"]) {
         if ([self.messageTextView.text length] <= 200) {
-            
+
             if ([self.delegate respondsToSelector:@selector (messageComposerSendMessageClickedWithMessage:)]) {
                 [self.delegate messageComposerSendMessageClickedWithMessage:self.messageTextView.text];
             }
-            
+
             [self.messageTextView setText:@""];
             // Manually trigger the textViewDidChange method as setting the     text when the messageTextView is not first responder the
             // UITextViewTextDidChangeNotification notification does not get fired.
             [self textViewDidChange:self.messageTextView];
         }
-        
+
         return false;
     }
-    
+
     return  textView.text.length + (text.length - range.length) <= 200;
 }
 
@@ -292,7 +293,7 @@ const NSInteger defaultHeight = 48;
 #pragma mark - UITextViewDelegate
 - (void)textViewDidChange:(UITextView *)textView {
     [self setNeedsLayout];
-    
+
     if ([self.delegate respondsToSelector:@selector(messageComposerUserTyping)])
         [self.delegate messageComposerUserTyping];
 }
