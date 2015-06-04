@@ -26,7 +26,6 @@
 @interface MessageComposerView()
 - (IBAction)sendClicked:(id)sender;
 - (IBAction)cameraClicked:(id)sender;
-@property(nonatomic, strong) UITextView *messageTextView;
 @property(nonatomic, strong) UIButton *sendButton;
 @property(nonatomic, strong) UIButton *cameraButton;
 @property(nonatomic) CGFloat keyboardHeight;
@@ -48,8 +47,12 @@ const NSInteger defaultHeight = 48;
     return [self initWithKeyboardOffset:0 andMaxHeight:CGFLOAT_MAX];
 }
 
+- (id)initWithKeyboardOffset:(NSInteger)offset andMaxHeight:(CGFloat)maxTVHeight andTextView:(UITextView*)textView {
+    return [self initWithFrame:CGRectMake(0, [self currentScreenSize].height-defaultHeight,[self currentScreenSize].width,defaultHeight) andKeyboardOffset:offset andMaxHeight:maxTVHeight andTextView:textView];
+}
+
 - (id)initWithKeyboardOffset:(NSInteger)offset andMaxHeight:(CGFloat)maxTVHeight {
-    return [self initWithFrame:CGRectMake(0, [self currentScreenSize].height-defaultHeight,[self currentScreenSize].width,defaultHeight) andKeyboardOffset:offset andMaxHeight:maxTVHeight];
+    return [self initWithFrame:CGRectMake(0, [self currentScreenSize].height-defaultHeight,[self currentScreenSize].width,defaultHeight) andKeyboardOffset:offset andMaxHeight:maxTVHeight andTextView:nil];
 }
 
 - (id)initWithFrame:(CGRect)frame {
@@ -57,10 +60,10 @@ const NSInteger defaultHeight = 48;
 }
 
 - (id)initWithFrame:(CGRect)frame andKeyboardOffset:(NSInteger)offset {
-    return [self initWithFrame:frame andKeyboardOffset:offset andMaxHeight:CGFLOAT_MAX];
+    return [self initWithFrame:frame andKeyboardOffset:offset andMaxHeight:CGFLOAT_MAX andTextView:nil];
 }
 
-- (id)initWithFrame:(CGRect)frame andKeyboardOffset:(NSInteger)offset andMaxHeight:(CGFloat)maxTVHeight {
+- (id)initWithFrame:(CGRect)frame andKeyboardOffset:(NSInteger)offset andMaxHeight:(CGFloat)maxTVHeight andTextView:(UITextView*)textView {
     self = [super initWithFrame:frame];
     if (self) {
         // top inset is used as a minimum value of top padding.
@@ -95,6 +98,10 @@ const NSInteger defaultHeight = 48;
             self.messageTextView = [[UITextView alloc] initWithFrame:CGRectZero textContainer:textContainer];
         } else {
             self.messageTextView = [[UITextView alloc] initWithFrame:CGRectZero];
+        }
+
+        if (textView != nil ) {
+            self.messageTextView = textView;
         }
 
         self.messageTextView.returnKeyType = UIReturnKeySend;

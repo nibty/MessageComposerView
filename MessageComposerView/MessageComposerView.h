@@ -48,13 +48,15 @@ alpha:1.0]
 @property(nonatomic, weak) id<MessageComposerViewDelegate> delegate;
 @property(nonatomic, readonly) CGFloat originalFrameHeight;
 @property(nonatomic) NSInteger keyboardOffset;
+@property(nonatomic, strong) UITextView* messageTextView;
 
+- (id)initWithKeyboardOffset:(NSInteger)offset andMaxHeight:(CGFloat)maxTVHeight andTextView:(UITextView*)textView;
 // init with screen width and default height. Offset provided is space between composer and keyboard/bottom of screen
 - (id)initWithKeyboardOffset:(NSInteger)offset andMaxHeight:(CGFloat)maxTVHeight;
 // init with provided frame and offset between composer and keyboard/bottom of screen
 - (id)initWithFrame:(CGRect)frame andKeyboardOffset:(NSInteger)offset;
 // init with provided frame and offset between composer and keyboard/bottom of screen. Also set a max height on composer.
-- (id)initWithFrame:(CGRect)frame andKeyboardOffset:(NSInteger)offset andMaxHeight:(CGFloat)maxTVHeight;
+- (id)initWithFrame:(CGRect)frame andKeyboardOffset:(NSInteger)offset andMaxHeight:(CGFloat)maxTVHeight andTextView:(UITextView*)textView;
 // provide a function to scroll the textview to bottom manually in fringe cases like loading message drafts etc.
 - (void)scrollTextViewToBottom;
 
