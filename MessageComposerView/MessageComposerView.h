@@ -76,4 +76,6 @@ alpha:1.0]
 // Set border color
 -(void)setBorderColor:(UIColor*)color;
 
+// Set the text in the textview
+-(void)setTextViewText:(NSString*)text;
 @end

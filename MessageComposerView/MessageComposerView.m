@@ -141,6 +141,13 @@ const NSInteger defaultHeight = 48;
     self.cameraButton.hidden = NO;
 }
 
+-(void)setTextViewText:(NSString*)text {
+    [self.messageTextView setText:text];
+    // Manually trigger the textViewDidChange method as setting the text when the messageTextView is not first responder the
+    // UITextViewTextDidChangeNotification notification does not get fired.
+    [self textViewDidChange:self.messageTextView];
+}
+
 -(void)setSendButtonColor:(UIColor*)color {
     [self.sendButton setTitleColor: color forState:UIControlStateNormal];
 }
@@ -365,11 +372,14 @@ const NSInteger defaultHeight = 48;
 
 #pragma mark - IBAction
 - (IBAction)sendClicked:(id)sender {
+
+    NSString *keyboardText = self.messageTextView.text;
+    [self.messageTextView setText:@""];
+
     if ([self.delegate respondsToSelector:@selector(messageComposerSendMessageClickedWithMessage:)]) {
-        [self.delegate messageComposerSendMessageClickedWithMessage:self.messageTextView.text];
+        [self.delegate messageComposerSendMessageClickedWithMessage:keyboardText];
     }
 
-    [self.messageTextView setText:@""];
     // Manually trigger the textViewDidChange method as setting the text when the messageTextView is not first responder the
     // UITextViewTextDidChangeNotification notification does not get fired.
     [self textViewDidChange:self.messageTextView];
