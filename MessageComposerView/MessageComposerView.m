@@ -287,11 +287,14 @@ const NSInteger defaultHeight = 48;
     if ([text  isEqual: @"\n"]) {
         if ([self.messageTextView.text length] <= 200) {
 
+            
+            NSString *text = self.messageTextView.text;
+            [self.messageTextView setText:@""];
+
             if ([self.delegate respondsToSelector:@selector (messageComposerSendMessageClickedWithMessage:)]) {
-                [self.delegate messageComposerSendMessageClickedWithMessage:self.messageTextView.text];
+                [self.delegate messageComposerSendMessageClickedWithMessage:text];
             }
 
-            [self.messageTextView setText:@""];
             // Manually trigger the textViewDidChange method as setting the     text when the messageTextView is not first responder the
             // UITextViewTextDidChangeNotification notification does not get fired.
             [self textViewDidChange:self.messageTextView];
