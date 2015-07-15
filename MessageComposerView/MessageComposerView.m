@@ -316,6 +316,11 @@ const NSInteger defaultHeight = 48;
 }
 
 - (void)textViewDidBeginEditing:(UITextView*)textView {
+
+    if ([self.delegate respondsToSelector:@selector(messageComposerDidBeginEditing)]) {
+        [self.delegate messageComposerDidBeginEditing];
+    }
+
     CGRect frame = self.frame;
     frame.origin.y = ([self currentScreenSize].height - [self currentKeyboardHeight]) - frame.size.height - _keyboardOffset;
 
@@ -333,6 +338,11 @@ const NSInteger defaultHeight = 48;
 }
 
 - (void)textViewDidEndEditing:(UITextView*)textView {
+
+    if ([self.delegate respondsToSelector:@selector(messageComposerDidEndEditing)]) {
+        [self.delegate messageComposerDidEndEditing];
+    }
+
     CGRect frame = self.frame;
     frame.origin.y = [self currentScreenSize].height - self.frame.size.height - _keyboardOffset;
 

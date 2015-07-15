@@ -42,6 +42,11 @@ alpha:1.0]
 // executed whenever the user is typing in the text view
 - (void)messageComposerUserTyping;
 
+@optional
+-(void)messageComposerDidEndEditing;
+@optional
+-(void)messageComposerDidBeginEditing;
+
 @end
 
 @interface MessageComposerView : UIView<UITextViewDelegate>
